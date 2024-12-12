@@ -12,7 +12,7 @@ jobs:
         uses: atlassian/gajira-login@v3
         env:
           JIRA_BASE_URL: https://hdtv.atlassian.net
-          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_API_TOKEN: ATATT3xFfGF0OAHH3oEcTvfhEaBsQH1NAICjNy53OufuRcbQi1G15ThpGHsZdHdHtGlkafNEGfmTFqq5grYOKTQ_YSqAErDaHf7gvi-xKxDgxPcjS9r7edCiiNz84FSz-BHct-YzAf8r4XCenLuOuKWU8l-tZd41IczfwqIciKBaQT9nT_T3w3Y=17B87C0B
           JIRA_USER_EMAIL: hdtv@kakao.com
 
       - name: Checkout main code
