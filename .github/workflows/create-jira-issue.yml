@@ -78,13 +78,13 @@ jobs:
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'update-issue'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ATATT3xFfGF0OAHH3oEcTvfhEaBsQH1NAICjNy53OufuRcbQi1G15ThpGHsZdHdHtGlkafNEGfmTFqq5grYOKTQ_YSqAErDaHf7gvi-xKxDgxPcjS9r7edCiiNz84FSz-BHct-YzAf8r4XCenLuOuKWU8l-tZd41IczfwqIciKBaQT9nT_T3w3Y=17B87C0B
           title: '[${{ steps.create.outputs.issue }}] ${{ github.event.issue.title }}'
 
       - name: Add comment with Jira issue link
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'create-comment'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ATATT3xFfGF0OAHH3oEcTvfhEaBsQH1NAICjNy53OufuRcbQi1G15ThpGHsZdHdHtGlkafNEGfmTFqq5grYOKTQ_YSqAErDaHf7gvi-xKxDgxPcjS9r7edCiiNz84FSz-BHct-YzAf8r4XCenLuOuKWU8l-tZd41IczfwqIciKBaQT9nT_T3w3Y=17B87C0B
           issue-number: ${{ github.event.issue.number }}
           body: 'Jira Issue Created: [${{ steps.create.outputs.issue }}](https://hdtv.atlassian.net/browse/${{ steps.create.outputs.issue }})'
