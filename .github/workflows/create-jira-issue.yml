@@ -12,7 +12,7 @@ jobs:
         uses: atlassian/gajira-login@v3
         env:
           JIRA_BASE_URL: https://hdtv.atlassian.net
-          JIRA_API_TOKEN: ATATT3xFfGF05KYNylilwWISA1JGbQu9IdVOzR01YriAkUAeNZmF37gs3fzTAPpocW7RYei4Y-0VRuJcJ19XUHr25RBvHaE_rn9fDh8wlHo3UDlcsa14e31FTr1QgrIthbTWgnYeUpDLcFnH6QDI4SUMS9r7HT6qpqK_cTREBU_zDtb55V0kTNQ=CE4D203A
+          JIRA_API_TOKEN: ATATT3xFfGF0uC-DV_AKQoK-Ob9zxz28i8fBDRujfqq4_GAHb7nvhbB6-btzJwfzhjd7Fj5y2_eaIG7aVHNFcF7vQvVQirtOrwTo-5EU_IaiKraz1hsJwJsJdGK1Oj7rGAOtXx-EUfBiZnojVjBzVlHv6CngoDktYNURCXAMprcjE-gZ6Ggorn4=46937F5E
           JIRA_USER_EMAIL: hdtv@kakao.com
 
       - name: Checkout main code
@@ -73,5 +73,5 @@ jobs:
         uses: actions-cool/issues-helper@v3
         with:
           actions: "update-issue"
-          token: ATATT3xFfGF05KYNylilwWISA1JGbQu9IdVOzR01YriAkUAeNZmF37gs3fzTAPpocW7RYei4Y-0VRuJcJ19XUHr25RBvHaE_rn9fDh8wlHo3UDlcsa14e31FTr1QgrIthbTWgnYeUpDLcFnH6QDI4SUMS9r7HT6qpqK_cTREBU_zDtb55V0kTNQ=CE4D203A
+          token: ATATT3xFfGF0uC-DV_AKQoK-Ob9zxz28i8fBDRujfqq4_GAHb7nvhbB6-btzJwfzhjd7Fj5y2_eaIG7aVHNFcF7vQvVQirtOrwTo-5EU_IaiKraz1hsJwJsJdGK1Oj7rGAOtXx-EUfBiZnojVjBzVlHv6CngoDktYNURCXAMprcjE-gZ6Ggorn4=46937F5E
           title: "${{ steps.create.outputs.issue }} ${{ github.event.issue.title }}"
