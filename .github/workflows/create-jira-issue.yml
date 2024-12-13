@@ -14,6 +14,7 @@ jobs:
           JIRA_BASE_URL: https://hdtv.atlassian.net
           JIRA_API_TOKEN: ATATT3xFfGF05KYNylilwWISA1JGbQu9IdVOzR01YriAkUAeNZmF37gs3fzTAPpocW7RYei4Y-0VRuJcJ19XUHr25RBvHaE_rn9fDh8wlHo3UDlcsa14e31FTr1QgrIthbTWgnYeUpDLcFnH6QDI4SUMS9r7HT6qpqK_cTREBU_zDtb55V0kTNQ=CE4D203A
           JIRA_USER_EMAIL: hdtv@kakao.com
+          
       - name: Checkout main code
         uses: actions/checkout@v4
         with:
