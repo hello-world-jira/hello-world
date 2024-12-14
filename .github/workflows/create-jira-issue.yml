@@ -45,7 +45,7 @@ jobs:
           mode: md2jira
 
       - name: Transition issue
-        if: ${{ steps.issue-parser.outputs.issueparser_childKey }} != ''
+        if: ${{ steps.issue-parser.outputs.issueparser_childKey != '' && steps.issue-parser.outputs.issueparser_childKey != null }}
         id: transition
         uses: atlassian/gajira-transition@v3
         with:
