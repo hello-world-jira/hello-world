@@ -15,23 +15,35 @@ jobs:
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
 
-      - name: Parse GitHub Issue Body
-        id: parse-body
+      - name: Parse and Validate GitHub Issue Body
+        id: validate-body
         run: |
-          echo "parentKey=$(echo '${{ github.event.issue.body }}' | grep -oP '(?<=parentKey: )\S+')" >> $GITHUB_ENV
-          echo "childKey=$(echo '${{ github.event.issue.body }}' | grep -oP '(?<=childKey: )\S+')" >> $GITHUB_ENV
-          echo "branch=$(echo '${{ github.event.issue.body }}' | grep -oP '(?<=branch: )\S+')" >> $GITHUB_ENV
-          echo "description=$(echo '${{ github.event.issue.body }}' | grep -oP '(?<=description: ).*')" >> $GITHUB_ENV
+          parentKey=$(echo '${{ github.event.issue.body }}' | grep -oP '(?<=parentKey: )\S+')
+          childKey=$(echo '${{ github.event.issue.body }}' | grep -oP '(?<=childKey: )\S+')
+          branch=$(echo '${{ github.event.issue.body }}' | grep -oP '(?<=branch: )\S+')
+          description=$(echo '${{ github.event.issue.body }}' | grep -oP '(?<=description: ).*')
+          if [[ -z "$parentKey" ]]; then
+            echo "Error: parentKey is required but not provided."
+            exit 1
+          fi
+          echo "parentKey=$parentKey" >> $GITHUB_ENV
+          echo "childKey=$childKey" >> $GITHUB_ENV
+          echo "branch=$branch" >> $GITHUB_ENV
+          echo "description=$description" >> $GITHUB_ENV
 
       - name: Check if Child Task Exists
         id: check-task
         run: |
-          response=$(curl -s -o response.json -w "%{http_code}" \
-            -H "Authorization: Basic ${{ secrets.JIRA_AUTH }}" \
-            -H "Content-Type: application/json" \
-            "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/${{ env.childKey }}")
-          if [[ "$response" == "200" ]]; then
-            echo "issue_exists=true" >> $GITHUB_ENV
+          if [[ -n "${{ env.childKey }}" ]]; then
+            response=$(curl -s -o response.json -w "%{http_code}" \
+              -H "Authorization: Basic ${{ secrets.JIRA_AUTH }}" \
+              -H "Content-Type: application/json" \
+              "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/${{ env.childKey }}")
+            if [[ "$response" == "200" ]]; then
+              echo "issue_exists=true" >> $GITHUB_ENV
+            else
+              echo "issue_exists=false" >> $GITHUB_ENV
+            fi
           else
             echo "issue_exists=false" >> $GITHUB_ENV
           fi
@@ -78,23 +90,7 @@ jobs:
           git checkout -b ${{ env.branch }}
           git push origin ${{ env.branch }}
 
-      - name: Log Jira Task Link
-        if: ${{ env.issue_exists == 'true' }}
-        run: |
-          echo "Updated existing child task to In Progress: [${{ env.childKey }}](${ secrets.JIRA_BASE_URL }}/browse/${{ env.childKey }})"
-        env:
-          childKey: ${{ env.childKey }}
-          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-
-      - name: Log New Jira Task Link
-        if: ${{ env.issue_exists == 'false' }}
-        run: |
-          echo "New child task created under parent task: [${{ steps.create-task.outputs.issue }}](${ secrets.JIRA_BASE_URL }}/browse/${{ steps.create-task.outputs.issue }})"
-        env:
-          createdIssue: ${{ steps.create-task.outputs.issue }}
-          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-
-      - name: Add comment with Jira Task link
+      - name: Add Comment with Jira Task Link
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'create-comment'
