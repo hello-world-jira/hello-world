@@ -72,6 +72,7 @@ jobs:
             }
 
       - name: Create Branch for Task
+        if: ${{ env.issue_exists == 'false' }}
         run: |
           git fetch origin
           git checkout -b ${{ env.branch }}
@@ -86,6 +87,11 @@ jobs:
           fi
 
       - name: Add comment with Jira Task link
+        run: |
+          if [[ "${{ env.issue_exists }}" == "true" ]]; then
+            echo "Comment: Updated existing child task to In Progress: [${{ env.childKey }}](${ secrets.JIRA_BASE_URL }}/browse/${{ env.childKey }})"
+          else
+            echo "Comment: New child task created under parent task: [${{ steps.create-task.outputs.issue }}](${ secrets.JIRA_BASE_URL }}/browse/${{ steps.create-task.outputs.issue }})"
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'create-comment'
