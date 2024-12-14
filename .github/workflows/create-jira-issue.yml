@@ -78,20 +78,23 @@ jobs:
           git checkout -b ${{ env.branch }}
           git push origin ${{ env.branch }}
 
-      - name: Log Issue Update or Creation
+      - name: Log Jira Task Link
+        if: ${{ env.issue_exists == 'true' }}
         run: |
-          if [[ "${{ env.issue_exists }}" == "true" ]]; then
-            echo "Updated existing child task: ${{ env.childKey }} to In Progress."
-          else
-            echo "Created new child task under parent: ${{ env.parentKey }} with task key: ${{ steps.create-task.outputs.issue }}."
-          fi
+          echo "Updated existing child task to In Progress: [${{ env.childKey }}](${ secrets.JIRA_BASE_URL }}/browse/${{ env.childKey }})"
+        env:
+          childKey: ${{ env.childKey }}
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+
+      - name: Log New Jira Task Link
+        if: ${{ env.issue_exists == 'false' }}
+        run: |
+          echo "New child task created under parent task: [${{ steps.create-task.outputs.issue }}](${ secrets.JIRA_BASE_URL }}/browse/${{ steps.create-task.outputs.issue }})"
+        env:
+          createdIssue: ${{ steps.create-task.outputs.issue }}
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
 
       - name: Add comment with Jira Task link
-        run: |
-          if [[ "${{ env.issue_exists }}" == "true" ]]; then
-            echo "Comment: Updated existing child task to In Progress: [${{ env.childKey }}](${ secrets.JIRA_BASE_URL }}/browse/${{ env.childKey }})"
-          else
-            echo "Comment: New child task created under parent task: [${{ steps.create-task.outputs.issue }}](${ secrets.JIRA_BASE_URL }}/browse/${{ steps.create-task.outputs.issue }})"
         uses: actions-cool/issues-helper@v3
         with:
           actions: 'create-comment'
