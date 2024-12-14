@@ -7,24 +7,35 @@ body:
     id: parentKey
     attributes:
       label: '🎟️ 상위 작업 (Ticket Number)'
-      description: '상위 작업의 Ticket Number를 기입해주세요'
+      description: '상위 작업의 Ticket Number를 기입해주세요 (예: PRJ-00)'
       placeholder: 'PRJ-00'
     validations:
       required: true
 
   - type: input
+    id: childKey
+    attributes:
+      label: '🔗 하위 작업 (Ticket Number - 선택)'
+      description: '기존 하위 작업이 있다면 해당 Ticket Number를 입력하세요. 없을 경우 새로운 작업이 생성됩니다.'
+      placeholder: 'PRJ-01'
+    validations:
+      required: false
+
+  - type: input
     id: branch
     attributes:
       label: '🌳 브랜치명 (Branch)'
-      description: '영어로 브랜치명을 작성해주세요'
+      description: '영어로 브랜치명을 작성해주세요 (예: feature/your-branch)'
+      placeholder: 'feature/your-branch'
     validations:
       required: true
-      
+
   - type: input
     id: description
     attributes:
       label: '📝 상세 내용(Description)'
       description: '이슈에 대해서 간략히 설명해주세요'
+      placeholder: '이슈에 대한 설명을 작성해주세요'
     validations:
       required: true
 
