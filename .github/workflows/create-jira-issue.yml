@@ -52,7 +52,7 @@ jobs:
           transition: "In progress"
 
       - name: Create Issue
-        if: "${{ steps.transition.outcome }}" == "failure"
+        if: ${{ steps.transition.outcome == 'failure' }}
         id: create
         uses: atlassian/gajira-create@v3
         with:
