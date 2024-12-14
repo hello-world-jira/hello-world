@@ -49,7 +49,7 @@ jobs:
         uses: atlassian/gajira-transition@v3
         with:
           issue: "${{ steps.issue-parser.outputs.issueparser_childKey }}"
-          transition: "In progress"
+          transition: "진행 중"
 
       - name: Create Issue
         if: ${{ steps.transition.outcome == 'failure' }}
