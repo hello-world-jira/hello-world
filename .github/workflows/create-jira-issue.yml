@@ -25,20 +25,26 @@ jobs:
 
       - name: Check if Child Task Exists
         id: check-task
-        if: ${{ env.childKey != '' }}
-        uses: atlassian/gajira-get@v3
-        with:
-          issue: ${{ env.childKey }}
+        run: |
+          response=$(curl -s -o response.json -w "%{http_code}" \
+            -H "Authorization: Basic ${{ secrets.JIRA_AUTH }}" \
+            -H "Content-Type: application/json" \
+            "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/${{ env.childKey }}")
+          if [[ "$response" == "200" ]]; then
+            echo "issue_exists=true" >> $GITHUB_ENV
+          else
+            echo "issue_exists=false" >> $GITHUB_ENV
+          fi
 
       - name: Update Child Task to In Progress
-        if: ${{ steps.check-task.outputs.issue != '' }}
+        if: ${{ env.issue_exists == 'true' }}
         uses: atlassian/gajira-transition@v3
         with:
           issue: ${{ env.childKey }}
           transition: "In Progress"
 
       - name: Convert Markdown to Jira Syntax
-        if: ${{ steps.check-task.outputs.issue == '' }}
+        if: ${{ env.issue_exists == 'false' }}
         uses: peter-evans/jira2md@v1
         id: md2jira
         with:
@@ -50,7 +56,7 @@ jobs:
           mode: md2jira
 
       - name: Create New Child Task
-        if: ${{ steps.check-task.outputs.issue == '' }}
+        if: ${{ env.issue_exists == 'false' }}
         id: create-task
         uses: atlassian/gajira-create@v3
         with:
@@ -73,7 +79,7 @@ jobs:
 
       - name: Log Issue Update or Creation
         run: |
-          if [[ "${{ steps.check-task.outputs.issue }}" != "" ]]; then
+          if [[ "${{ env.issue_exists }}" == "true" ]]; then
             echo "Updated existing child task: ${{ env.childKey }} to In Progress."
           else
             echo "Created new child task under parent: ${{ env.parentKey }} with task key: ${{ steps.create-task.outputs.issue }}."
@@ -86,4 +92,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           body: |
-            ${{ steps.check-task.outputs.issue != '' && 'Updated existing child task to In Progress: [${{ env.childKey }}](${ secrets.JIRA_BASE_URL }}/browse/${{ env.childKey }})' || 'New child task created under parent task: [${{ steps.create-task.outputs.issue }}](${ secrets.JIRA_BASE_URL }}/browse/${{ steps.create-task.outputs.issue }})' }}
+            ${{ env.issue_exists == 'true' && 'Updated existing child task to In Progress: [${{ env.childKey }}](${ secrets.JIRA_BASE_URL }}/browse/${{ env.childKey }})' || 'New child task created under parent task: [${{ steps.create-task.outputs.issue }}](${ secrets.JIRA_BASE_URL }}/browse/${{ steps.create-task.outputs.issue }})' }}
