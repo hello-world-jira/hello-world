@@ -44,7 +44,15 @@ jobs:
             ${{ github.event.issue.body }}
           mode: md2jira
 
+      - name: Transition issue
+        id: transition
+        uses: atlassian/gajira-transition@v3
+        with:
+          issue: "${{ steps.issue-parser.outputs.issueparser_childKey }}"
+          transition: "In progress"
+
       - name: Create Issue
+        if: "${{ steps.transition.outcome }}" == "failure"
         id: create
         uses: atlassian/gajira-create@v3
         with:
