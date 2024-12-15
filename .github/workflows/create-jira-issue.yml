@@ -98,7 +98,7 @@ jobs:
       - name : 기존 이슈 제목 업데이트
         if: ${{ steps.issue-parser.outputs.issueparser_childKey != '' && steps.issue-parser.outputs.issueparser_childKey != null }}
         uses: actions-cool/issues-helper@v3
-        whith:
+        with:
           actions: 'update-issue'
           token: ${{ secrets.GITHUB_TOKEN}}
           title: '[${{ steps.issue-parser.outputs.issueparser_childKey }}] ${{ github.event.issue.title }}'
